@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Card Component</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #faf7f2;
+      --ink: #1a1208;
+      --gold: #c8902a;
+      --gold-light: #f5e4c0;
+      --red: #c0392b;
+      --gray: #8a8070;
+      --white: #ffffff;
+      --radius: 16px;
+      --shadow: 0 12px 48px rgba(26,18,8,0.14);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* Grid of cards for demo */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    @media (min-width: 768px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* --- Product Card --- */
+    .product-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(26,18,8,0.18);
+    }
+
+    /* Image */
+    .product-card__image-wrapper {
+      position: relative;
+      overflow: hidden;
+      background: var(--cream);
+      aspect-ratio: 4/3;
+    }
+
+    .product-card__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      display: block;
+    }
+
+    .product-card:hover .product-card__image {
+      transform: scale(1.04);
+    }
+
+    /* Fallback if image broken */
+    .product-card__image.broken {
+      display: none;
+    }
+
+    .product-card__image-fallback {
+      display: none;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .product-card__image-fallback svg {
+      width: 48px;
+      height: 48px;
+      opacity: 0.4;
+    }
+
+    .product-card__image.broken ~ .product-card__image-fallback {
+      display: flex;
+    }
+
+    /* Discount badge */
+    .product-card__badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--red);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      z-index: 2;
+    }
+
+    /* Body */
+    .product-card__body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .product-card__name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .product-card__description {
+      font-size: 13.5px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* Pricing */
+    .product-card__pricing {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-card__price {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .product-card__original-price {
+      font-size: 14px;
+      color: var(--gray);
+      text-decoration: line-through;
+    }
+
+    /* Quantity Selector */
+    .product-card__quantity-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .product-card__quantity {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1.5px solid #e8e0d4;
+      border-radius: 10px;
+      overflow: hidden;
+      width: fit-content;
+    }
+
+    .product-card__qty-btn {
+      background: none;
+      border: none;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--ink);
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 400;
+    }
+
+    .product-card__qty-btn:hover:not(:disabled) {
+      background: var(--gold-light);
+    }
+
+    .product-card__qty-btn:disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .product-card__qty-value {
+      width: 40px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      border-left: 1.5px solid #e8e0d4;
+      border-right: 1.5px solid #e8e0d4;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Add to Cart button */
+    .product-card__add-btn {
+      margin-top: auto;
+      background: var(--ink);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      padding: 13px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      width: 100%;
+    }
+
+    .product-card__add-btn:hover {
+      background: var(--gold);
+    }
+
+    .product-card__add-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Success notification */
+    .product-card__success {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: #eaf7ee;
+      border: 1px solid #a3d9b1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #206530;
+      font-weight: 500;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .product-card__success.visible {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cards-grid">
+  <!-- Card 1 -->
+  <article class="product-card" aria-label="Product: Artisan Leather Wallet">
+    <div class="product-card__image-wrapper">
+      <img
+        class="product-card__image"
+        src="https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80"
+        alt="Artisan Leather Wallet"
+        onerror="this.classList.add('broken')"
+      />
+      <div class="product-card__image-fallback" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>Image unavailable</span>
+      </div>
+      <span class="product-card__badge">25% OFF</span>
+    </div>
+    <div class="product-card__body">
+      <h2 class="product-card__name">Artisan Leather Wallet</h2>
+      <p class="product-card__description">Handcrafted from full-grain leather with hand-stitched edges. Slim profile with 6 card slots and a bill compartment.</p>
+      <div class="product-card__pricing">
+        <span class="product-card__price" aria-label="Discounted price: $44.99">$44.99</span>
+        <span class="product-card__original-price" aria-label="Original price: $59.99">$59.99</span>
+      </div>
+      <div>
+        <p class="product-card__quantity-label">Quantity</p>
+        <div class="product-card__quantity" role="group" aria-label="Quantity selector">
+          <button class="product-card__qty-btn" data-action="dec" aria-label="Decrease quantity" disabled>−</button>
+          <span class="product-card__qty-value" aria-live="polite" aria-atomic="true">1</span>
+          <button class="product-card__qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+      <div class="product-card__success" role="alert" aria-live="polite">
+        <span>✓</span> <span class="success-msg">Added to cart!</span>
+      </div>
+      <button class="product-card__add-btn" aria-label="Add Artisan Leather Wallet to cart">Add to Cart</button>
+    </div>
+  </article>
+
+  <!-- Card 2 - broken image to show fallback -->
+  <article class="product-card" aria-label="Product: Ceramic Pour-Over Set">
+    <div class="product-card__image-wrapper">
+      <img
+        class="product-card__image"
+        src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80"
+        alt="Ceramic Pour-Over Coffee Set"
+        onerror="this.classList.add('broken')"
+      />
+      <div class="product-card__image-fallback" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>Image unavailable</span>
+      </div>
+      <span class="product-card__badge">15% OFF</span>
+    </div>
+    <div class="product-card__body">
+      <h2 class="product-card__name">Ceramic Pour-Over Set</h2>
+      <p class="product-card__description">Matte-finish ceramic dripper with matching carafe. Brews 2–4 cups with precision temperature control and clean, rich extraction.</p>
+      <div class="product-card__pricing">
+        <span class="product-card__price" aria-label="Discounted price: $67.99">$67.99</span>
+        <span class="product-card__original-price" aria-label="Original price: $79.99">$79.99</span>
+      </div>
+      <div>
+        <p class="product-card__quantity-label">Quantity</p>
+        <div class="product-card__quantity" role="group" aria-label="Quantity selector">
+          <button class="product-card__qty-btn" data-action="dec" aria-label="Decrease quantity" disabled>−</button>
+          <span class="product-card__qty-value" aria-live="polite" aria-atomic="true">1</span>
+          <button class="product-card__qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+      <div class="product-card__success" role="alert" aria-live="polite">
+        <span>✓</span> <span class="success-msg">Added to cart!</span>
+      </div>
+      <button class="product-card__add-btn" aria-label="Add Ceramic Pour-Over Set to cart">Add to Cart</button>
+    </div>
+  </article>
+
+  <!-- Card 3 -->
+  <article class="product-card" aria-label="Product: Linen Tote Bag">
+    <div class="product-card__image-wrapper">
+      <img
+        class="product-card__image"
+        src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80"
+        alt="Natural Linen Tote Bag"
+        onerror="this.classList.add('broken')"
+      />
+      <div class="product-card__image-fallback" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>Image unavailable</span>
+      </div>
+      <span class="product-card__badge">30% OFF</span>
+    </div>
+    <div class="product-card__body">
+      <h2 class="product-card__name">Natural Linen Tote Bag</h2>
+      <p class="product-card__description">100% stonewashed French linen. Reinforced handles and interior zip pocket. Folds flat for easy storage — perfect for market days.</p>
+      <div class="product-card__pricing">
+        <span class="product-card__price" aria-label="Discounted price: $34.99">$34.99</span>
+        <span class="product-card__original-price" aria-label="Original price: $49.99">$49.99</span>
+      </div>
+      <div>
+        <p class="product-card__quantity-label">Quantity</p>
+        <div class="product-card__quantity" role="group" aria-label="Quantity selector">
+          <button class="product-card__qty-btn" data-action="dec" aria-label="Decrease quantity" disabled>−</button>
+          <span class="product-card__qty-value" aria-live="polite" aria-atomic="true">1</span>
+          <button class="product-card__qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+      <div class="product-card__success" role="alert" aria-live="polite">
+        <span>✓</span> <span class="success-msg">Added to cart!</span>
+      </div>
+      <button class="product-card__add-btn" aria-label="Add Natural Linen Tote Bag to cart">Add to Cart</button>
+    </div>
+  </article>
+</div>
+
+<script>
+  const MIN_QTY = 1;
+  const MAX_QTY = 10;
+
+  document.querySelectorAll('.product-card').forEach(card => {
+    const decBtn   = card.querySelector('[data-action="dec"]');
+    const incBtn   = card.querySelector('[data-action="inc"]');
+    const display  = card.querySelector('.product-card__qty-value');
+    const addBtn   = card.querySelector('.product-card__add-btn');
+    const success  = card.querySelector('.product-card__success');
+    const name     = card.querySelector('.product-card__name').textContent;
+    const priceEl  = card.querySelector('.product-card__price').textContent;
+    let qty = 1;
+
+    function updateButtons() {
+      decBtn.disabled = qty <= MIN_QTY;
+      incBtn.disabled = qty >= MAX_QTY;
+      display.textContent = qty;
+    }
+
+    decBtn.addEventListener('click', () => {
+      if (qty > MIN_QTY) { qty--; updateButtons(); }
+    });
+
+    incBtn.addEventListener('click', () => {
+      if (qty < MAX_QTY) { qty++; updateButtons(); }
+    });
+
+    addBtn.addEventListener('click', () => {
+      const price = parseFloat(priceEl.replace('$', ''));
+      const total = (price * qty).toFixed(2);
+
+      // Log to console
+      console.log('Cart Item Added:', {
+        product: name,
+        quantity: qty,
+        unitPrice: priceEl,
+        total: `$${total}`
+      });
+
+      // Show success message
+      const msgEl = success.querySelector('.success-msg');
+      msgEl.textContent = `${qty} × ${name} added! Total: $${total}`;
+      success.classList.add('visible');
+
+      // Hide after 3 seconds
+      setTimeout(() => success.classList.remove('visible'), 3000);
+    });
+  });
+</script>
+</body>
+</html>
