@@ -1,6 +1,8 @@
 # DVC Web Development Internship Assessment
 **Position:** Web Development Intern — Digital Visibility Concepts
-
+Nanme:- Prem kumar
+Email:- premkumar9122om@gmail.com
+Portfolio:- https://premkr.framer.website/
 ---
 
 ## Files
@@ -54,7 +56,6 @@ State management:
 Forecast logic: The free-tier `/forecast` endpoint returns 3-hour intervals. The code groups them by date and picks the reading closest to noon for each day, giving a clean 5-day view.
 
 LocalStorage: wrapped in `try/catch` so the app degrades gracefully if storage is unavailable (private browsing, storage quota exceeded, etc.).
-
 
 **Time spent:** ~1.5 hours
 
