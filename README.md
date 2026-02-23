@@ -1,8 +1,10 @@
 # DVC Web Development Internship Assessment
 **Position:** Web Development Intern — Digital Visibility Concepts
 
-Nanme:- Prem kumar
+Name:- Prem kumar
+
 Email:- premkumar9122om@gmail.com
+
 Portfolio:- https://premkr.framer.website/
 
 ---
