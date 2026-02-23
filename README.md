@@ -21,7 +21,7 @@ Quantity logic is self-contained per card — each card tracks its own `qty` var
 
 **Assumptions:** Used placeholder Unsplash images. Broken-image fallback is demonstrated via `onerror` handler toggling a CSS class.
 
-**Time spent:** ~1.5 hours
+**Time spent:** ~2.5 hours
 
 ---
 
@@ -38,7 +38,7 @@ A single-file plugin following WordPress coding standards. Structure:
 
 **Assumptions:** Plugin targets WP 6.0+. The slider JS uses no external dependencies.
 
-**Time spent:** ~2 hours
+**Time spent:** ~3 hours
 
 ---
 
@@ -55,7 +55,6 @@ Forecast logic: The free-tier `/forecast` endpoint returns 3-hour intervals. The
 
 LocalStorage: wrapped in `try/catch` so the app degrades gracefully if storage is unavailable (private browsing, storage quota exceeded, etc.).
 
-**To use:** Replace `YOUR_OPENWEATHERMAP_API_KEY` on line 1 of the script block with a free key from [openweathermap.org](https://openweathermap.org/api).
 
 **Time spent:** ~1.5 hours
 
@@ -65,3 +64,5 @@ LocalStorage: wrapped in `try/catch` so the app degrades gracefully if storage i
 - All code is cross-browser compatible (Chrome, Firefox, Safari, Edge)
 - No external JS frameworks used across any solution
 - All user-facing strings are accessible (proper ARIA labels, semantic roles, live regions)
+
+  made by prem kumar
